@@ -1,0 +1,46 @@
+1.How Does K8s Pod Control CPU Resource
+
+Through the use of CPU resource requests and limits. When defining a Pod, you can specify a CPU resource request for each container, indicating the minimum amount of CPU 
+required for proper functioning. For example:
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: web-app
+spec:
+  containers:
+  - name: web-server
+    image: nginx:latest
+    resources:
+      requests:
+        cpu: 500m  # 0.5 CPU cores
+      limits:
+        cpu: 1000m # 1 CPU core
+Then K8s scheduler utilizes this information to find suitable nodes with available CPU resources to accommodate the requested amount.
+What Happens if a Pod Exceeds CPU Limit?
+
+2.If a Pod exceeds its CPU limit, K8s enforces CPU throttling on the offending container. CPU throttling is a mechanism that temporarily reduces the container’s 
+CPU allocation to ensure it does not consume more resources than its specified limit.
+When the container surpasses its CPU limit, it is considered to be in a “CPU throttling” state. During throttling, the container’s access to CPU cycles is restricted,
+and it may experience performance degradation.
+How Does K8s Pod Control Memory Resource
+Memory resources are controlled through the use of memory resource requests and limits. When defining a Pod, you can specify a memory resource request for each container, 
+indicating the minimum amount of memory required for proper functioning. For example:
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: backend-app
+spec:
+  containers:
+  - name: backend-server
+    image: my-backend-image:latest
+    resources:
+      requests:
+        memory: "1Gi" # 1 GB of memory
+      limits:
+        memory: "2Gi" # 2 GB of memory
+
+What Happens if a Pod Exceeds Memory Limit?
+Memory is not a compressible resource like CPU, so when this happens, the out-of-memory (OOM) process will be invoked to handle the situation.
+When a container in the Pod consumes…
